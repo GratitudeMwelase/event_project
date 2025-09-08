@@ -113,11 +113,11 @@
             <table>
                 <tr><th style="width: 60%;">Item</th><th style="width: 40%;">Budget</th></tr>
                 {% for form in venue_formset %}
-                <tr>
-                    <td>{{ form.name }}</td>
-                    <td>{{ form.budget }}</td>
-                </tr>
-                {% endfor %}
+        <tr>
+            <td>{{ form.name }}</td>
+            <td>{{ form.amount }}</td>
+        </tr>
+        {% endfor %}
             </table>
         </div>
 
@@ -128,7 +128,7 @@
                 {% for form in catering_formset %}
                 <tr>
                     <td>{{ form.name }}</td>
-                    <td>{{ form.budget }}</td>
+                    <td>{{ form.amount }}</td>
                 </tr>
                 {% endfor %}
             </table>
@@ -141,7 +141,7 @@
                 {% for form in decor_formset %}
                 <tr>
                     <td>{{ form.name }}</td>
-                    <td>{{ form.budget }}</td>
+                    <td>{{ form.amount }}</td>
                 </tr>
                 {% endfor %}
             </table>
@@ -154,12 +154,13 @@
                 {% for form in program_formset %}
                 <tr>
                     <td>{{ form.name }}</td>
-                    <td>{{ form.budget }}</td>
+                    <td>{{ form.amount }}</td>
                 </tr>
                 {% endfor %}
             </table>
         </div>
 
+        <button type="submit">Submit</button>
      
     </form>
 

@@ -20,7 +20,7 @@ urlpatterns = [
     path("attendee/logout/", views.attendee_logout, name="attendee_logout"),
     path('upcoming/', event_views.upcoming_events_view, name='upcoming_events'),
     path('attendee_overview/<int:attendee_id>/', views.attendee_overview, name='attendee_overview'),
-    path('event-budget/', event_views.event_budget_view, name='event_budget'),
+    path('events/<int:event_id>/budget/', event_views.event_budget_view, name='event_budget'),
     path('events/<int:event_id>/summary/', event_views.event_summary_view, name='event_summary'),
 
 

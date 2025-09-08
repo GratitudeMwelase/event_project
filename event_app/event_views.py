@@ -183,7 +183,8 @@ def upcoming_events_view(request):
     return render(request, 'upcoming_events.html', {'events': events})
 
 
-def event_budget_view(request):
+def event_budget_view(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
     BudgetItemFormSet = formset_factory(BudgetItemForm, extra=4)
 
     if request.method == 'POST':
@@ -195,10 +196,35 @@ def event_budget_view(request):
 
         if all([event_form.is_valid(), venue_formset.is_valid(), catering_formset.is_valid(), 
                 decor_formset.is_valid(), program_formset.is_valid()]):
-            # Save or process data here
-            return redirect('budget_success')  # Redirect to a success page
+            # Create or get the Budget for this event
+            budget, created = Budget.objects.get_or_create(event=event)
+            total = 0
+
+            # Helper to save items
+            def save_items(formset):
+                nonlocal total
+                for form in formset:
+                    name = form.cleaned_data.get('name')
+                    amount = form.cleaned_data.get('amount')
+                    if name or amount:  # Only save if at least one field is filled
+                        item = form.save(commit=False)
+                        item.budget = budget
+                        item.save()
+                        if amount:
+                            total += float(amount)
+
+            save_items(venue_formset)
+            save_items(catering_formset)
+            save_items(decor_formset)
+            save_items(program_formset)
+
+            budget.total_amount = total
+            budget.save()
+
+            return redirect('event_summary', event_id=event.id)
     else:
-        event_form = EventBudgetForm()
+        event_form = EventBudgetForm(initial={
+            'event_name': event.title,})
         venue_formset = BudgetItemFormSet(prefix='venue')
         catering_formset = BudgetItemFormSet(prefix='catering')
         decor_formset = BudgetItemFormSet(prefix='decor')
@@ -210,6 +236,7 @@ def event_budget_view(request):
         'catering_formset': catering_formset,
         'decor_formset': decor_formset,
         'program_formset': program_formset,
+        'event': event,
     })
 
 def event_summary_view(request, event_id):

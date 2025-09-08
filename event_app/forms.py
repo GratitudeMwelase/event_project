@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 
-from .models import Attendee, Event, EventRegistration
+from .models import Attendee, Event, EventRegistration, BudgetItem
 
 User = get_user_model()
 
@@ -199,8 +199,13 @@ class EventForm(forms.ModelForm):
             "is_online": forms.CheckboxInput(attrs={"class": "form-check-input"}),
         }
 class BudgetItemForm(forms.Form):
-    name = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'placeholder': 'Item'}))
-    budget = forms.DecimalField(required=False, decimal_places=2, max_digits=10)
+    class Meta:
+        model = BudgetItem
+        fields = ['name', 'amount']
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Item'}),
+            'amount': forms.NumberInput(attrs={'placeholder': 'Amount'}),
+        }
     
 
 class EventBudgetForm(forms.Form):
